@@ -24,12 +24,11 @@ import random
 from gcn.utils import *
 from gcn.models import MLP, GCN, Deep_GCN
 
-# 获得train、val、test
 def get_train_test_masks(labels, idx_train, idx_val, idx_test):
     train_mask = sample_mask(idx_train, labels.shape[0])
     val_mask = sample_mask(idx_val, labels.shape[0])
     test_mask = sample_mask(idx_test, labels.shape[0])
-    sxg_mask1 = np.ones(labels.shape[0])  # 用来计算新的邻接矩阵
+    sxg_mask1 = np.ones(labels.shape[0])  
     sxg_mask = np.array(sxg_mask1, dtype=np.bool)
     y_train = np.zeros(labels.shape)
     y_val = np.zeros(labels.shape)
@@ -107,7 +106,6 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
         pred1 = np.round(pred)
         lab = label
         lab = lab[np.squeeze(np.argwhere(mask == 1)), :]
-        #########################  songxuegang ##########################
         pred11 = np.zeros(len(pred1))
         for ii in range(0, len(pred1)):
             pred11[ii] = pred1[ii][0]
@@ -142,12 +140,11 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
             print("Early stopping...")
             break
 
- #############################################################################
     print("Optimization Finished!")
     
     # Testing
     sess.run(tf.local_variables_initializer())
-    test_cost, test_acc, test_duration, test_spe, test_bac = evaluate(features, support, y_test, sxg_mask, placeholders) #########给所有人打分，用来输出邻接矩阵#########
+    test_cost, test_acc, test_duration, test_spe, test_bac = evaluate(features, support, y_test, sxg_mask, placeholders) 
 
     del flags
     del FLAGS
