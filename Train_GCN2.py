@@ -24,7 +24,6 @@ import random
 from gcn.utils import *
 from gcn.models import MLP, GCN, Deep_GCN
 
-# 获得train、val、test
 def get_train_test_masks(labels, idx_train, idx_val, idx_test):
     train_mask = sample_mask(idx_train, labels.shape[0])
     val_mask = sample_mask(idx_val, labels.shape[0])
@@ -45,7 +44,6 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
                  params):
 
     # Set random seed
-    # 保证训练后模型的一致性
     random.seed(params['seed'])
     np.random.seed(params['seed'])
     tf.set_random_seed(params['seed'])
@@ -71,7 +69,6 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
         raise ValueError('Invalid argument for GCN model ')
     
     # Define placeholders
-    # 定义占位符
     placeholders = {
         'support': [tf.sparse_placeholder(tf.float32) for _ in range(num_supports)],
         'features': tf.sparse_placeholder(tf.float32, shape=tf.constant(features[2], dtype=tf.int64)),
