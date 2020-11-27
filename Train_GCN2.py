@@ -100,7 +100,6 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
         pred1 = np.round(pred)
         lab = label
         lab = lab[np.squeeze(np.argwhere(mask == 1)), :]
-        #########################  songxuegang ##########################
         pred11 = np.zeros(len(pred1))
         for ii in range(0, len(pred1)):
             pred11[ii] = pred1[ii][0]
@@ -109,7 +108,6 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
             lab11[ii] = lab[ii][0]
         return outs_val[0], outs_val[1], (time.time() - t_test), pred, lab  # used to output roc curve (pred and lab)
 
-#########################################################################
     # Init variables
     sess.run(tf.global_variables_initializer())
     
@@ -138,9 +136,6 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
             break
 
 
-
-
- #############################################################################
     print("Optimization Finished!")
     
     # Testing
