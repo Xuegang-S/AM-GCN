@@ -7,6 +7,7 @@
 import time
 import argparse
 import numpy as np
+from sklearn.model_selection import train_test_split
 from scipy import sparse
 from scipy.spatial import distance
 import scipy.io as sio
@@ -17,11 +18,12 @@ import Code_pub.Train_GCN2 as Train11
 
 def train_fold(train_ind, test_ind, feature, y, y_data, train_ind1, test_ind1, feature1, y1, y_data1, params,graph_feat0, graph_feat1, mode):
 
+    train_ind, val_ind = train_test_split(train_ind, test_size=0.2, random_state=1)
 
     x_data = Reader2.feature_selection(feature, y, train_ind, params['num_features'])
     x_data1 = Reader2.feature_selection(feature1, y1, train_ind, params['num_features'])
 
-    num_0 = len(train_ind)
+    num_0 = len(train_ind)+len(val_ind)
     num_1 = len(y1)
     distv = distance.pdist(x_data, metric='correlation')
     dist0 = distance.squareform(distv)
@@ -44,7 +46,7 @@ def train_fold(train_ind, test_ind, feature, y, y_data, train_ind1, test_ind1, f
     ################# Adaptive Adjancency Matrix #########
 
     test_acc1, test_pred1, test_bac1 = Train1.run_training(final_graph, sparse.coo_matrix(x_data).tolil(), y_data,
-                                                          train_ind, test_ind,
+                                                          train_ind, val_ind,
                                                           test_ind, params)
     score = test_pred1[:, 1]
     xiangsi = np.random.normal(size=(len(y), len(y)))
@@ -79,9 +81,9 @@ def train_fold(train_ind, test_ind, feature, y, y_data, train_ind1, test_ind1, f
         final_graph1[k, :] = final_graph1[k, :] / np.sum(final_graph1[k, :])
 
     ###########  Augmented Multi-center GCN   ###########
-
+    train_ind1, val_ind1 = train_test_split(train_ind1, test_size=0.2, random_state=1)
     test_acc1, test_pred1, test_bac1 = Train11.run_training(final_graph1, sparse.coo_matrix(x_data1).tolil(), y_data1,
-                                                          train_ind1, test_ind1,
+                                                          train_ind1, val_ind1,
                                                           test_ind1, params)
     time.sleep(2)
     lab = y_data1[test_ind1, 1]
@@ -142,20 +144,21 @@ def main():
     params['num_features'] = args.num_features      # number of features for feature selection step
     params['num_training'] = args.num_training      # percentage of training set used for training
 
+  ############################################################################
 
-    data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\KT1.mat")
-    task = 1
-    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\KT2.mat")
+    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\KT1-417-1.mat")
+    # task = 1
+    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\KT2-178-1.mat")
     # task = 2
-    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\HYD.mat")
+    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\哈医大-1.mat")
     # task = 3
-    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\QYY.mat")
+    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\七医院-104-11.mat")
     # task = 4
-    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\FC.mat")
-    # task = 5
-    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\ZN.mat")
+    data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\武汉方舱-130-1.mat")
+    task = 5
+    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\中南-205-1.mat")
     # task = 6
-    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\data-online.mat")
+    # data1 = sio.loadmat("C:\\Users\\admin\\Desktop\\新冠文章修改\\resultrevised\\data-onine1000_fold1weight111-3.mat")
     # task = 7
 
     feature_train = data1['x_train_1']
@@ -165,6 +168,8 @@ def main():
     sex = data1['sex']
     site = data1['site']
     equipnum = data1['equip']
+
+   ############
 
     feature = np.vstack((feature_train, feature_test))
     labels = np.vstack((labels_train, labels_test))
@@ -228,9 +233,9 @@ def main():
     mode = 4
     gcn_pred, lab= train_fold(train_ind, test_ind, feature, y, y_data, train_ind1, test_ind1, feature1, y1, y_data1, params,graph_feat0, graph_feat1, mode)
 
-    sio.savemat("C:\\Users\\admin\\Desktop\\result\\" + str(task) + 'pred' +'mode'+ str(mode) + '.mat',
+    sio.savemat("C:\\Users\\admin\\Desktop\\resultrevised\\" + str(task) + 'pred' +'mode'+ str(mode) + '.mat',
                 {'pred': gcn_pred})
-    sio.savemat("C:\\Users\\admin\\Desktop\\result\\" + str(task) +'lab' + '.mat',
+    sio.savemat("C:\\Users\\admin\\Desktop\\resultrevised\\" + str(task) +'lab' + '.mat',
                 {'lab':lab})
 
 if __name__ == "__main__":
