@@ -30,9 +30,9 @@ def feature_selection(matrix, labels, train_ind, fnum):
 
 def final_graph_sparse(final_graph, feat_num):
     for i in range(len(final_graph[1])):
-        ai = sorted(final_graph[i, :])  # 第i行从小到大排序，
-        bi = ai[len(final_graph[1]) - feat_num]  # 去掉最小相似值，保留feat_num个大的相似值
-        ci = ai[len(final_graph[1]) - 2]  # 去掉2个最大相似值
+        ai = sorted(final_graph[i, :])  
+        bi = ai[len(final_graph[1]) - feat_num]  
+        ci = ai[len(final_graph[1]) - 2]  
         for j in range(len(final_graph[1])):
             if final_graph[i, j] <= bi:
                 final_graph[i, j] = 0
