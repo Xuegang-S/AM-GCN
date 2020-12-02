@@ -105,6 +105,7 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
             lab11[ii] = lab[ii][0]
         return outs_val[0], outs_val[1], (time.time() - t_test), pred, lab  # used to output roc curve (pred and lab)
 
+#########################################################################
     # Init variables
     sess.run(tf.global_variables_initializer())
     
@@ -132,15 +133,14 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
             print("Early stopping...")
             break
 
-
     print("Optimization Finished!")
     
     # Testing
     sess.run(tf.local_variables_initializer())
-    test_cost, test_acc, test_duration, test_spe, test_bac = evaluate(features, support, y_test, sxg_mask, placeholders)
+    test_cost, test_acc, test_duration, test_pred, test_lab = evaluate(features, support, y_test, sxg_mask, placeholders)
 
     del flags
     del FLAGS
     del model11
     del placeholders
-    return test_acc, test_spe, test_bac
+    return test_acc, test_pred, test_lab
