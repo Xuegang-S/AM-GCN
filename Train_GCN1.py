@@ -14,8 +14,6 @@
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-
 from __future__ import division
 from __future__ import print_function
 import time
@@ -28,7 +26,7 @@ def get_train_test_masks(labels, idx_train, idx_val, idx_test):
     train_mask = sample_mask(idx_train, labels.shape[0])
     val_mask = sample_mask(idx_val, labels.shape[0])
     test_mask = sample_mask(idx_test, labels.shape[0])
-    sxg_mask1 = np.ones(labels.shape[0])  
+    sxg_mask1 = np.ones(labels.shape[0])
     sxg_mask = np.array(sxg_mask1, dtype=np.bool)
     y_train = np.zeros(labels.shape)
     y_val = np.zeros(labels.shape)
@@ -144,10 +142,10 @@ def run_training(adj, features, labels, idx_train, idx_val, idx_test,
     
     # Testing
     sess.run(tf.local_variables_initializer())
-    test_cost, test_acc, test_duration, test_spe, test_bac = evaluate(features, support, y_test, sxg_mask, placeholders) 
+    test_cost, test_acc, test_duration, test_pred, test_lab = evaluate(features, support, y_test, sxg_mask, placeholders) #########给所有人打分，用来输出邻接矩阵#########
 
     del flags
     del FLAGS
     del model1
     del placeholders
-    return test_acc, test_spe, test_bac
+    return test_acc, test_pred, test_lab
