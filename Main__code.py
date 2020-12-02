@@ -18,7 +18,10 @@ import Code_pub.Train_GCN2 as Train11
 
 def train_fold(train_ind, test_ind, feature, y, y_data, train_ind1, test_ind1, feature1, y1, y_data1, params,graph_feat0, graph_feat1, mode):
 
+    print("len(train_ind+val_ind): " + str(len(train_ind)))
     train_ind, val_ind = train_test_split(train_ind, test_size=0.2, random_state=1)
+    print("len(train_ind): " + str(len(train_ind)))
+    print("len(val_ind): " + str(len(val_ind)))
 
     x_data = Reader2.feature_selection(feature, y, train_ind, params['num_features'])
     x_data1 = Reader2.feature_selection(feature1, y1, train_ind, params['num_features'])
@@ -45,7 +48,7 @@ def train_fold(train_ind, test_ind, feature, y, y_data, train_ind1, test_ind1, f
 
     ################# Adaptive Adjancency Matrix #########
 
-    test_acc1, test_pred1, test_bac1 = Train1.run_training(final_graph, sparse.coo_matrix(x_data).tolil(), y_data,
+    test_acc1, test_pred1, test_lab1 = Train1.run_training(final_graph, sparse.coo_matrix(x_data).tolil(), y_data,
                                                           train_ind, val_ind,
                                                           test_ind, params)
     score = test_pred1[:, 1]
@@ -81,8 +84,11 @@ def train_fold(train_ind, test_ind, feature, y, y_data, train_ind1, test_ind1, f
         final_graph1[k, :] = final_graph1[k, :] / np.sum(final_graph1[k, :])
 
     ###########  Augmented Multi-center GCN   ###########
+    print("len(train_ind1+val_ind1): " + str(len(train_ind1)))
     train_ind1, val_ind1 = train_test_split(train_ind1, test_size=0.2, random_state=1)
-    test_acc1, test_pred1, test_bac1 = Train11.run_training(final_graph1, sparse.coo_matrix(x_data1).tolil(), y_data1,
+    print("len(train_ind1): " + str(len(train_ind1)))
+    print("len(val_ind1): " + str(len(val_ind1)))
+    test_acc1, test_pred1, test_lab1 = Train11.run_training(final_graph1, sparse.coo_matrix(x_data1).tolil(), y_data1,
                                                           train_ind1, val_ind1,
                                                           test_ind1, params)
     time.sleep(2)
@@ -146,16 +152,16 @@ def main():
 
   ############################################################################
 
-    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\KT1-417-1.mat")
-    # task = 1
+    data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\KT1-417-1.mat")
+    task = 1
     # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\KT2-178-1.mat")
     # task = 2
     # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\哈医大-1.mat")
     # task = 3
     # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\七医院-104-11.mat")
     # task = 4
-    data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\武汉方舱-130-1.mat")
-    task = 5
+    # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\武汉方舱-130-1.mat")
+    # task = 5
     # data1 = sio.loadmat("D:\\code-new\\population-gcn-master\\coruvorus\\corodatasci\\中南-205-1.mat")
     # task = 6
     # data1 = sio.loadmat("C:\\Users\\admin\\Desktop\\新冠文章修改\\resultrevised\\data-onine1000_fold1weight111-3.mat")
